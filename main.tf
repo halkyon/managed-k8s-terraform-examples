@@ -4,6 +4,7 @@ terraform {
 
 provider "aws" {
   version = "~> 2.0"
+  region  = var.region
 }
 
 data "aws_availability_zones" "available" {
@@ -11,25 +12,49 @@ data "aws_availability_zones" "available" {
 }
 
 resource "aws_vpc" "vpc" {
-  cidr_block = "10.0.0.0/16"
+  cidr_block           = var.vpc_cidr
+  enable_dns_support   = true
+  enable_dns_hostnames = true
+  tags = {
+    Name = "${var.name}-vpc"
+  }
 }
 
+# resource "aws_internet_gateway" "igw" {
+#   vpc_id = aws_vpc.vpc.id
+# }
+
+# resource "aws_route_table" "publicroutetable" {
+#   vpc_id = aws_vpc.vpc.id
+#   route {
+#     cidr_block = "0.0.0.0/0"
+#     gateway_id = aws_internet_gateway.igw.id
+#   }
+#   tags = {
+#     Name = "${var.name}-public-routetable"
+#   }
+# }
+
 # TODO: public subnet, route table and associations?
-# TODO: tag so load balancers are created in the right subnet
 # TODO: security group allowing port 443 for k8s?
 
-resource "aws_subnet" "clustersubnet" {
-  count             = var.cluster_subnet_count
-  availability_zone = data.aws_availability_zones.available.names[count.index]
-  cidr_block        = cidrsubnet(aws_vpc.vpc.cidr_block, 4, count.index)
-  vpc_id            = aws_vpc.vpc.id
+resource "aws_subnet" "public" {
+  count                   = var.subnet_count
+  availability_zone       = data.aws_availability_zones.available.names[count.index]
+  cidr_block              = cidrsubnet(aws_vpc.vpc.cidr_block, 4, count.index)
+  vpc_id                  = aws_vpc.vpc.id
+  map_public_ip_on_launch = true
+  tags = {
+    Name                     = "${var.name}-public-subnet-${count.index}"
+    "kubernetes.io/role/elb" = "1"
+  }
 }
 
 resource "aws_eks_cluster" "cluster" {
   name     = var.name
   role_arn = aws_iam_role.clusterrole.arn
   vpc_config {
-    subnet_ids = aws_subnet.clustersubnet[*].id
+    subnet_ids = aws_subnet.private[*].id
   }
   # Ensure that IAM Role permissions are created before and deleted after EKS Cluster handling.
   # Otherwise, EKS will not be able to properly delete EKS managed EC2 infrastructure such as Security Groups.
@@ -41,13 +66,15 @@ resource "aws_eks_cluster" "cluster" {
 
 # TODO: security group allowing all TCP from public subnet?
 
-resource "aws_subnet" "nodesubnet" {
-  count             = var.node_subnet_count
+resource "aws_subnet" "private" {
+  count             = var.subnet_count
   availability_zone = data.aws_availability_zones.available.names[count.index]
   cidr_block        = cidrsubnet(aws_vpc.vpc.cidr_block, 8, count.index)
   vpc_id            = aws_vpc.vpc.id
   tags = {
+    Name                                                    = "${var.name}-private-subnet-${count.index}"
     "kubernetes.io/cluster/${aws_eks_cluster.cluster.name}" = "shared"
+    "kubernetes.io/role/internal-elb"                       = "1"
   }
 }
 
@@ -55,7 +82,7 @@ resource "aws_eks_node_group" "nodegroup" {
   cluster_name    = aws_eks_cluster.cluster.name
   node_group_name = var.name
   node_role_arn   = aws_iam_role.noderole.arn
-  subnet_ids      = aws_subnet.nodesubnet[*].id
+  subnet_ids      = aws_subnet.private[*].id
   scaling_config {
     desired_size = var.desired_size
     min_size     = var.min_size
