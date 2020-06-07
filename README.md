@@ -1,6 +1,6 @@
 # Example EKS cluster using Terraform
 
-This repository showcases using Terraform to provision a new VPC and EKS cluster with nodes within.
+This repository showcases using Terraform to provision a new VPC and Elastic Kubernetes Service (EKS) cluster with nodes within.
 
 By default, this will create a highly available cluster using public and private subnets, a best practise for production environments.
 
