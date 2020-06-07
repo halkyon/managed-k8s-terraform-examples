@@ -10,17 +10,6 @@ In `terraform.tfvars` set the variables you'd like.
 
 `name` and `region` must be defined, everything else is optional.
 
-You can create a single-az cluster with one node instead, which could be cost-effective for testing/development:
-
-```
-name = "mycluster"
-region = "ap-southeast-2"
-num_zones = 1
-desired_size = 1
-min_size = 1
-max_size = 1
-```
-
 ## Provisioning
 
 ```shell
