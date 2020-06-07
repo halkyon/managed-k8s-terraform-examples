@@ -5,7 +5,7 @@ variable "vpc_cidr" {
   default = "10.0.0.0/16"
 }
 
-variable "zones" {
+variable "num_zones" {
   default = 2
 }
 
@@ -18,13 +18,13 @@ variable "instance_type" {
 }
 
 variable "desired_size" {
-  default = 1
+  default = 2
 }
 
 variable "min_size" {
-  default = 1
+  default = 2
 }
 
 variable "max_size" {
-  default = 2
+  default = 4
 }
