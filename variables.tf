@@ -5,7 +5,7 @@ variable "vpc_cidr" {
   default = "10.0.0.0/16"
 }
 
-variable "subnet_count" {
+variable "zones" {
   default = 2
 }
 
@@ -15,4 +15,16 @@ variable "disk_size" {
 
 variable "instance_type" {
   default = "t3.medium"
+}
+
+variable "desired_size" {
+  default = 1
+}
+
+variable "min_size" {
+  default = 1
+}
+
+variable "max_size" {
+  default = 2
 }
