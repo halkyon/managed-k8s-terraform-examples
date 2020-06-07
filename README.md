@@ -40,5 +40,9 @@ Documentation to check out:
 * [Terraform EKS cluster reference](https://www.terraform.io/docs/providers/aws/r/eks_cluster.html)
 
 Other things:
+* Verify SSH access to nodes using EC2 instance connect or session manager (session manager may not require a bastion host)
 * Set up the [Kubernetes dashboard](https://docs.aws.amazon.com/eks/latest/userguide/dashboard-tutorial.html)
 * Set up [cluster-autoscaler](https://github.com/helm/charts/tree/master/stable/cluster-autoscaler)
+* Restrict access to Kubernetes API server with a whitelist
+* Configure [EKS control plane logging](https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html)
+* Use [Calico for network policy enforcement](https://docs.aws.amazon.com/eks/latest/userguide/calico.html)
