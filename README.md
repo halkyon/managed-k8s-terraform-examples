@@ -41,7 +41,7 @@ Documentation to check out:
 
 Other things:
 * Set up the [Kubernetes dashboard](https://docs.aws.amazon.com/eks/latest/userguide/dashboard-tutorial.html)
-* Set up [cluster-autoscaler](https://docs.aws.amazon.com/eks/latest/userguide/cluster-autoscaler.html)
+* Set up [cluster autoscaler](https://docs.aws.amazon.com/eks/latest/userguide/cluster-autoscaler.html)
 * Configure [control plane logging](https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html)
 * Use [Calico for network policy enforcement](https://docs.aws.amazon.com/eks/latest/userguide/calico.html)
 * Restrict access to Kubernetes API server with a whitelist
