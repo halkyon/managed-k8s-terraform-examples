@@ -157,6 +157,16 @@ resource "aws_iam_role" "cluster" {
   })
 }
 
+resource "aws_iam_role_policy_attachment" "AmazonEKSClusterPolicy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+  role       = aws_iam_role.cluster.name
+}
+
+resource "aws_iam_role_policy_attachment" "AmazonEKSServicePolicy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
+  role       = aws_iam_role.cluster.name
+}
+
 resource "aws_iam_role" "node" {
   name = "${var.name}-node"
   assume_role_policy = jsonencode({
@@ -169,16 +179,6 @@ resource "aws_iam_role" "node" {
       }
     }]
   })
-}
-
-resource "aws_iam_role_policy_attachment" "AmazonEKSClusterPolicy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-  role       = aws_iam_role.cluster.name
-}
-
-resource "aws_iam_role_policy_attachment" "AmazonEKSServicePolicy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
-  role       = aws_iam_role.cluster.name
 }
 
 resource "aws_iam_role_policy_attachment" "AmazonEKSWorkerNodePolicy" {
