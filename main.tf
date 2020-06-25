@@ -201,20 +201,18 @@ resource "aws_iam_role_policy" "EKSClusterAutoscaler" {
   role = aws_iam_role.node.name
   policy = jsonencode({
     Version = "2012-10-17"
-    Statement = [
-      {
-        Action = [
-          "autoscaling:DescribeAutoScalingGroups",
-          "autoscaling:DescribeAutoScalingInstances",
-          "autoscaling:DescribeLaunchConfigurations",
-          "autoscaling:DescribeTags",
-          "autoscaling:SetDesiredCapacity",
-          "autoscaling:TerminateInstanceInAutoScalingGroup",
-          "ec2:DescribeLaunchTemplateVersions"
-        ],
-        Effect   = "Allow"
-        Resource = "*"
-      }
-    ]
+    Statement = [{
+      Action = [
+        "autoscaling:DescribeAutoScalingGroups",
+        "autoscaling:DescribeAutoScalingInstances",
+        "autoscaling:DescribeLaunchConfigurations",
+        "autoscaling:DescribeTags",
+        "autoscaling:SetDesiredCapacity",
+        "autoscaling:TerminateInstanceInAutoScalingGroup",
+        "ec2:DescribeLaunchTemplateVersions"
+      ],
+      Effect   = "Allow"
+      Resource = "*"
+    }]
   })
 }
