@@ -14,7 +14,7 @@ variable "vpc_cidr" {
 variable "subnet_addtl_bits" {
   default     = 4
   description = <<EOF
-Additional bits added to VPC CIDR for subnets, to determine cluster subnet size.
+Additional bits added to VPC CIDR, to determine subnet size.
 e.g. a VPC CIDR of 10.0.0.0/16 and 4 additional bits will yield 10.0.*.0/20 subnets.
 EOF
 }
