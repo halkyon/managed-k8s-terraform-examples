@@ -30,7 +30,7 @@ EOF
 
 variable "disk_size" {
   default     = 100
-  description = "Disk size for nodes"
+  description = "Disk size for nodes, in GB."
 }
 
 variable "instance_type" {
