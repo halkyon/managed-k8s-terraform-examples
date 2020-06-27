@@ -42,6 +42,7 @@ Documentation to check out:
 Other things:
 * Set up the [Kubernetes dashboard](https://docs.aws.amazon.com/eks/latest/userguide/dashboard-tutorial.html)
 * Set up [cluster autoscaler](https://docs.aws.amazon.com/eks/latest/userguide/cluster-autoscaler.html)
+* Set up an ingress controller like [nginx ingress controller](https://kubernetes.github.io/ingress-nginx/deploy/#aws)
 * Configure [control plane logging](https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html)
 * Use [Calico for network policy enforcement](https://docs.aws.amazon.com/eks/latest/userguide/calico.html)
 * [Restrict access to Kubernetes API server](https://docs.aws.amazon.com/eks/latest/userguide/cluster-endpoint.html)
