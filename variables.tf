@@ -19,7 +19,10 @@ variable "subnet_addtl_bits" {
   default     = 4
   description = <<EOF
 Additional bits added to VPC CIDR, to determine subnet size.
-e.g. a VPC CIDR of 10.0.0.0/16 and 4 additional bits will yield 10.0.*.0/20 subnets.
+e.g. a VPC CIDR of 10.0.0.0/16 and 4 additional bits will yield subnets
+10.0.0.0/20, 10.0.16.0/20, 10.0.0.32.0/20, and so on.
+See https://www.linux.com/topic/networking/how-calculate-network-addresses-ipcalc/
+and https://www.terraform.io/docs/configuration/functions/cidrsubnet.html
 EOF
 }
 
