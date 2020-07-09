@@ -1,4 +1,4 @@
-project_id         = "credible-art-278405"
+project_id         = "my-project-123"
 location           = "australia-southeast1-a"
 name               = "mycluster"
 node_type          = "n1-standard-1"
