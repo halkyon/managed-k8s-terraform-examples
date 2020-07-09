@@ -3,7 +3,7 @@
 ## What is this?
 
 A bunch of different cloud provider's managed Kubernetes offerings as examples,
-using [Terraform](https://www.terraform.io/) to create a cluster within it's own network, using best practises
+using [Terraform](https://www.terraform.io/) to create a cluster within it's own network, with best practises
 (e.g. private notes, subnets etc) as much as possible.
 
 ## [aks/ AKS (Microsoft Azure Kubernetes Service)](aks/)
