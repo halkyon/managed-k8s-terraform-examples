@@ -2,7 +2,7 @@
 
 ## What is this?
 
-We'll take a bunch of different cloud provider's managed Kubernetes offering for a spin,
+A bunch of different cloud provider's managed Kubernetes offerings as examples,
 using [Terraform](https://www.terraform.io/) to create a cluster within it's own network, using best practises
 (e.g. private notes, subnets etc) as much as possible.
 
