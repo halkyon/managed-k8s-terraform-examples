@@ -1,0 +1,2 @@
+name     = "mycluster"
+location = "australiaeast"

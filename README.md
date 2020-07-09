@@ -1,52 +1,15 @@
-# Example EKS cluster using Terraform
+# Managed Kubernetes examples
 
-This repository showcases using Terraform to provision a new VPC and Elastic Kubernetes Service (EKS) cluster with nodes within.
+## What is this?
 
-By default, this will create a highly available cluster using public and private subnets, a best practise for production environments.
+We'll take a bunch of different cloud provider's managed Kubernetes offering for a spin,
+creating a cluster within it's own network in each provider, using best practises
+(e.g. private notes, subnets etc) as much as possible.
 
-## Setup variables
+## [aks/ AKS (Microsoft Azure Kubernetes Service)](gke/)
 
-In `terraform.tfvars` set the variables you'd like.
+## [doks/ DOKS (DigitalOcean Kubernetes Service)](doks/)
 
-`name` and `region` must be defined, everything else is optional.
+## [eks/ EKS (Amazon Elastic Kubernetes Service)](eks/)
 
-## Provisioning
-
-```shell
-terraform init
-terraform apply
-```
-
-## Configure kubectl
-
-See [this guide on setting up authentication](https://docs.aws.amazon.com/eks/latest/userguide/managing-auth.html).
-
-## Test it works
-
-```shell
-kubectl get nodes -o wide
-```
-
-## Tearing down
-
-```shell
-terraform destroy
-```
-
-## What now?
-
-Documentation to check out:
-* [EKS user guide](https://docs.aws.amazon.com/eks/latest/userguide)
-* [Terraform EKS cluster reference](https://www.terraform.io/docs/providers/aws/r/eks_cluster.html)
-* [CNI proposal on Kubernetes networking with AWS VPC](https://github.com/aws/amazon-vpc-cni-k8s/blob/master/docs/cni-proposal.md)
-
-Other things you may wish to do:
-* Set up the [Kubernetes dashboard](https://docs.aws.amazon.com/eks/latest/userguide/dashboard-tutorial.html)
-* Set up [cluster autoscaler](https://docs.aws.amazon.com/eks/latest/userguide/cluster-autoscaler.html)
-* Set up an ingress controller like [nginx ingress controller](https://kubernetes.github.io/ingress-nginx/deploy/#aws)
-* Set up [Prometheus and Grafana monitoring](https://www.eksworkshop.com/intermediate/240_monitoring/)
-* Set up CI like [Jenkins X](https://jenkins-x.io/docs/)
-* Set up [ExternalDNS for integration with Route 53](https://github.com/kubernetes-sigs/external-dns)
-* Configure [control plane logging](https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html)
-* Use [Calico for network policy enforcement](https://docs.aws.amazon.com/eks/latest/userguide/calico.html)
-* [Restrict access to Kubernetes API server](https://docs.aws.amazon.com/eks/latest/userguide/cluster-endpoint.html)
+## [gke/ GKE (Google Kubernetes Engine)](gke/)
