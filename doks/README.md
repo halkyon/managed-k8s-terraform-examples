@@ -22,7 +22,7 @@ export TF_VAR_do_token=YOUR_TOKEN_HERE
 
 `name` and `region` are required. `cluster_version` specifies the Kubernetes version to use (currently defaults to `1.18`.)
 
-* `doctl compute region list` will show a list of all regions available, use the slug value for `region`.
+* `doctl kubernetes options regions` will show a list of all regions available, use the slug value for `region`.
 * `doctl kubernetes options versions` shows available Kubernetes versions available, use the slug value for `cluster_version`.
 
 ## Provisioning
