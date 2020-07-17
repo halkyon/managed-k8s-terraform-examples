@@ -20,11 +20,10 @@ export TF_VAR_do_token=YOUR_TOKEN_HERE
 
 ### Setup variables
 
-`name` and `region` are required.
+`name` and `region` are required. `cluster_version` specifies the Kubernetes version to use (currently defaults to `1.18`.)
 
-See [Regional Availability Matrix](https://www.digitalocean.com/docs/platform/availability-matrix/) for a list of available regions.
-
-Run `doctl kubernetes options versions` to get available Kubernetes versions that can be set with the `cluster_version` variable.
+* `doctl compute region list` will show a list of all regions available, use the slug value for `region`.
+* `doctl kubernetes options versions` shows available Kubernetes versions available, use the slug value for `cluster_version`.
 
 ## Provisioning
 
