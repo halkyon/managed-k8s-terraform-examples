@@ -48,6 +48,9 @@ resource "azurerm_kubernetes_cluster" "primary" {
     max_count             = var.max_count
     vnet_subnet_id        = azurerm_subnet.nodes.id
   }
+  role_based_access_control {
+    enabled = true  
+  }
   identity {
     type = "SystemAssigned"
   }
