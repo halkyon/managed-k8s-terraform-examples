@@ -13,6 +13,12 @@ provider "google" {
   region  = local.region
 }
 
+provider "google-beta" {
+  version = "~> 3.0"
+  project = var.project_id
+  region  = local.region
+}
+
 resource "google_compute_network" "network" {
   name                    = var.name
   auto_create_subnetworks = false
@@ -51,17 +57,35 @@ resource "google_compute_router_nat" "nat" {
   }
 }
 
+data "google_container_engine_versions" "versions" {
+  provider       = google-beta
+  location       = var.location
+  version_prefix = var.version_prefix
+}
+
 resource "google_container_cluster" "primary" {
+  provider                 = google-beta
   name                     = var.name
   location                 = var.location
   initial_node_count       = 1
   remove_default_node_pool = true
   enable_shielded_nodes    = true
-  min_master_version       = "latest"
-  network                  = google_compute_network.network.self_link
-  subnetwork               = google_compute_subnetwork.nodes.self_link
+  maintenance_policy {
+    recurring_window {
+      start_time = var.maintenance_start_time
+      end_time   = var.maintenance_end_time
+      recurrence = var.maintenance_recurrence
+    }
+  }
+  release_channel {
+    channel = var.release_channel
+  }
+  min_master_version = data.google_container_engine_versions.versions.latest_master_version
+  node_version       = data.google_container_engine_versions.versions.latest_node_version
+  network            = google_compute_network.network.self_link
+  subnetwork         = google_compute_subnetwork.nodes.self_link
   ip_allocation_policy {
-    cluster_ipv4_cidr_block  = var.pods_cidr
+    cluster_ipv4_cidr_block  = var.cluster_cidr
     services_ipv4_cidr_block = var.services_cidr
   }
   private_cluster_config {
@@ -72,6 +96,24 @@ resource "google_container_cluster" "primary" {
   workload_identity_config {
     identity_namespace = "${var.project_id}.svc.id.goog"
   }
+  #
+  # Some interesting configuration options for security:
+  #
+  # sandbox_config {
+  #   sandbox_type = "gvisor"
+  # }
+  # pod_security_policy_config {
+  #   enabled = true
+  # }
+  # network_policy {
+  #   enabled  = true
+  #   provider = "CALICO"
+  # }
+  # addons_config {
+  #   network_policy_config {
+  #     disabled = false
+  #   }
+  # }
   master_auth {
     username = ""
     password = ""

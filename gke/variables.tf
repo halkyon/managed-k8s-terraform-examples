@@ -17,6 +17,53 @@ variable "name" {
   description = "Name of the cluster."
 }
 
+variable "release_channel" {
+  type        = string
+  default     = "REGULAR"
+  description = <<EOF
+Release channel for GKE cluster.
+See https://cloud.google.com/kubernetes-engine/docs/concepts/release-channels and
+https://cloud.google.com/kubernetes-engine/docs/release-notes-stable
+EOF
+}
+
+variable "version_prefix" {
+  type        = string
+  default     = "1.17."
+  description = <<EOF
+Version prefix for cluster and nodes. This version has to be available in the
+selected release channel.
+See https://www.terraform.io/docs/providers/google/d/container_engine_versions.html
+EOF
+}
+
+variable "maintenance_start_time" {
+  type        = string
+  default     = "2020-01-01T14:00:00Z"
+  description = <<EOF
+Maintenance start time.
+See https://cloud.google.com/kubernetes-engine/docs/how-to/maintenance-windows-and-exclusions
+EOF
+}
+
+variable "maintenance_end_time" {
+  type        = string
+  default     = "2020-01-01T18:00:00Z"
+  description = <<EOF
+Maintenance end time.
+See https://cloud.google.com/kubernetes-engine/docs/how-to/maintenance-windows-and-exclusions
+EOF
+}
+
+variable "maintenance_recurrence" {
+  type        = string
+  default     = "FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR"
+  description = <<EOF
+Maintenance recurrence.
+See https://cloud.google.com/kubernetes-engine/docs/how-to/maintenance-windows-and-exclusions
+EOF
+}
+
 variable "nat_ip_count" {
   type        = number
   default     = 1
@@ -106,16 +153,16 @@ variable "nodes_cidr" {
   type        = string
   default     = "10.1.0.0/20"
   description = <<EOF
-Nodes CIDR.
+IP address range for node IPs.
 See https://cloud.google.com/kubernetes-engine/docs/how-to/alias-ips#cluster_sizing
 EOF
 }
 
-variable "pods_cidr" {
+variable "cluster_cidr" {
   type        = string
   default     = "/14"
   description = <<EOF
-Pods CIDR.
+IP address range for the cluster pod IPs.
 See https://cloud.google.com/kubernetes-engine/docs/how-to/alias-ips#cluster_sizing
 EOF
 }
@@ -124,7 +171,7 @@ variable "services_cidr" {
   type        = string
   default     = "/20"
   description = <<EOF
-Services CIDR.
+IP address range of the services IPs in this cluster.
 See https://cloud.google.com/kubernetes-engine/docs/how-to/alias-ips#cluster_sizing
 EOF
 }
