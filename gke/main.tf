@@ -162,4 +162,8 @@ resource "google_container_node_pool" "primary" {
       enable_secure_boot          = true
     }
   }
+  # Allow external changes to initial_node_count without interference from Terraform.
+  lifecycle {
+    ignore_changes = [initial_node_count]
+  }
 }
