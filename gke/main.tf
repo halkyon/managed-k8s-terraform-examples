@@ -96,6 +96,13 @@ resource "google_container_cluster" "primary" {
   workload_identity_config {
     identity_namespace = "${var.project_id}.svc.id.goog"
   }
+
+  # For vertically autoscaling pod resources.
+  # Horizontal autoscaling can be enabled through the addons block.
+  #vertical_pod_autoscaling {
+  #  enabled = true
+  #}
+
   #
   # Some interesting configuration options for security:
   #
