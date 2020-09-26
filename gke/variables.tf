@@ -31,8 +31,7 @@ variable "version_prefix" {
   type        = string
   default     = "1.17."
   description = <<EOF
-Version prefix for cluster and nodes. This version has to be available in the
-selected release channel.
+Version prefix for cluster and nodes.
 See https://www.terraform.io/docs/providers/google/d/container_engine_versions.html
 EOF
 }
