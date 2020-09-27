@@ -98,14 +98,19 @@ resource "google_container_cluster" "primary" {
   }
 
   # For vertically autoscaling pod resources.
-  # Horizontal autoscaling can be enabled through the addons block.
-  #vertical_pod_autoscaling {
-  #  enabled = true
-  #}
+  # See https://cloud.google.com/kubernetes-engine/docs/how-to/vertical-pod-autoscaling
+  vertical_pod_autoscaling {
+    enabled = true
+  }
 
+  # Some interesting configuration options for security.
+  # See https://www.terraform.io/docs/providers/google/r/container_cluster.html
   #
-  # Some interesting configuration options for security:
-  #
+  # database_encryption {
+  #   state = "ENCRYPTED"
+  #   key_name = "projects/[KEY_PROJECT_ID]/locations/[LOCATION]/keyRings/[RING_NAME]/cryptoKeys/[KEY_NAME]"
+  # }
+  # boot_disk_kms_key = "projects/[KEY_PROJECT_ID]/locations/[LOCATION]/keyRings/[RING_NAME]/cryptoKeys/[KEY_NAME]"
   # sandbox_config {
   #   sandbox_type = "gvisor"
   # }
@@ -139,14 +144,15 @@ resource "google_container_cluster" "primary" {
   }
 }
 
-resource "google_container_node_pool" "primary" {
-  name               = "primary"
+resource "google_container_node_pool" "node_pool" {
+  count              = length(var.node_pools)
+  name               = lookup(var.node_pools[count.index], "name")
   cluster            = google_container_cluster.primary.name
   location           = var.location
-  initial_node_count = var.initial_node_count
+  initial_node_count = lookup(var.node_pools[count.index], "initial_node_count", 1)
   autoscaling {
-    min_node_count = var.min_node_count
-    max_node_count = var.max_node_count
+    min_node_count = lookup(var.node_pools[count.index], "min_node_count", 1)
+    max_node_count = lookup(var.node_pools[count.index], "max_node_count", 2)
   }
   management {
     auto_repair  = true
@@ -157,10 +163,10 @@ resource "google_container_node_pool" "primary" {
       "https://www.googleapis.com/auth/logging.write",
       "https://www.googleapis.com/auth/monitoring",
     ]
-    machine_type = var.node_type
-    preemptible  = var.node_preemptible
-    disk_size_gb = var.node_disk_size_gb
-    disk_type    = var.node_disk_type
+    machine_type = lookup(var.node_pools[count.index], "machine_type", "n1-standard-1")
+    preemptible  = lookup(var.node_pools[count.index], "preemptible", false)
+    disk_size_gb = lookup(var.node_pools[count.index], "disk_size_gb", 40)
+    disk_type    = lookup(var.node_pools[count.index], "disk_type", "pd-standard")
     metadata = {
       disable-legacy-endpoints = "true"
     }
@@ -168,6 +174,8 @@ resource "google_container_node_pool" "primary" {
       enable_integrity_monitoring = true
       enable_secure_boot          = true
     }
+    tags   = lookup(var.node_pools[count.index], "tags", [])
+    labels = lookup(var.node_pools[count.index], "labels", {})
   }
   # Allow external changes to initial_node_count without interference from Terraform.
   lifecycle {

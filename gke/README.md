@@ -22,6 +22,16 @@ Once initialised, ensure your account is added to the Application Default Creden
 gcloud auth application-default login
 ```
 
+Additionally, ensure that APIs have been enabled:
+
+```shell
+gcloud services enable storage-api.googleapis.com
+gcloud services enable cloudresourcemanager.googleapis.com
+gcloud services enable compute.googleapis.com
+gcloud services enable container.googleapis.com
+gcloud services enable iam.googleapis.com
+```
+
 ## Setup variables
 
 In `terraform.tfvars` set the details according to your Google Cloud account.
@@ -33,16 +43,18 @@ In `terraform.tfvars` set the details according to your Google Cloud account.
 An example `terraform.tfvars` file of using a single zone cluster with [preemptible nodes](https://cloud.google.com/compute/docs/instances/preemptible):
 
 ```
-project_id         = "my-project-123"
-location           = "australia-southeast1-a"
-name               = "mycluster"
-node_type          = "n1-standard-1"
-node_disk_type     = "pd-standard"
-node_disk_size_gb  = 40
-node_preemptible   = true
-initial_node_count = 1
-min_node_count     = 1
-max_node_count     = 2
+project_id      = "my-project-123"
+location        = "australia-southeast1-a"
+name            = "mycluster"
+node_pools = [
+  {
+    name           = "nodes_preemptible"
+    preemptible    = true
+    min_node_count = 1
+    max_node_count = 2
+    machine_type   = "n2-standard-2"
+  }
+]
 ```
 
 Check out a [list of Google Cloud regions and zones](https://cloud.google.com/compute/docs/regions-zones) for reference.

@@ -82,56 +82,38 @@ Any external changes made (i.e. autoscaling) will not be overwritten.
 EOF
 }
 
-variable "min_node_count" {
-  type        = number
-  default     = 1
-  description = "Minimum node count for autoscaling"
-}
-
-variable "max_node_count" {
-  type        = number
-  default     = 2
-  description = "Maximum node count for autoscaling"
-}
-
-variable "node_type" {
-  type        = string
-  default     = "n1-standard-1"
+variable "node_pools" {
+  type = list(object({
+    name               = string
+    initial_node_count = number
+    min_node_count     = number
+    max_node_count     = number
+    machine_type       = string
+    preemptible        = bool
+    disk_size_gb       = string
+    disk_type          = string
+    labels             = map(string)
+    tags               = list(string)
+  }))
   description = <<EOF
-Machine type for nodes.
-See https://cloud.google.com/compute/docs/machine-types and
-https://cloud.google.com/compute/vm-instance-pricing
+List of node pools to use for the cluster.
+See https://www.terraform.io/docs/providers/google/r/container_node_pool.html
 EOF
-}
-
-variable "node_preemptible" {
-  type        = string
-  default     = false
-  description = <<EOF
-Whether or not nodes are preemptible.
-See https://cloud.google.com/compute/docs/instances/preemptible
-EOF
-}
-
-variable "node_disk_type" {
-  type        = string
-  default     = "pd-ssd"
-  description = <<EOF
-Node disk type. Can be either "pd-standard" or "pd-ssd".
-See https://cloud.google.com/compute/docs/disks/
-EOF
-}
-
-variable "node_disk_size_gb" {
-  type        = string
-  default     = 100
-  description = "Node disk size, in GB."
 }
 
 variable "master_cidr" {
   type        = string
   default     = "172.16.0.0/28"
   description = "Kubernetes control plane CIDR."
+}
+
+variable "nodes_cidr" {
+  type        = string
+  default     = "10.1.0.0/20"
+  description = <<EOF
+IP address range for node IPs.
+See https://cloud.google.com/kubernetes-engine/docs/how-to/alias-ips#cluster_sizing
+EOF
 }
 
 variable "master_authorized_networks_cidr_blocks" {
@@ -146,15 +128,6 @@ variable "master_authorized_networks_cidr_blocks" {
     }
   ]
   description = "Network addresses to allow access to the Kubernetes control plane."
-}
-
-variable "nodes_cidr" {
-  type        = string
-  default     = "10.1.0.0/20"
-  description = <<EOF
-IP address range for node IPs.
-See https://cloud.google.com/kubernetes-engine/docs/how-to/alias-ips#cluster_sizing
-EOF
 }
 
 variable "cluster_cidr" {
