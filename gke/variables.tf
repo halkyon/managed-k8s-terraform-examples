@@ -83,18 +83,7 @@ EOF
 }
 
 variable "node_pools" {
-  type = list(object({
-    name               = string
-    initial_node_count = number
-    min_node_count     = number
-    max_node_count     = number
-    machine_type       = string
-    preemptible        = bool
-    disk_size_gb       = string
-    disk_type          = string
-    labels             = map(string)
-    tags               = list(string)
-  }))
+  type        = list(map(string))
   description = <<EOF
 List of node pools to use for the cluster.
 See https://www.terraform.io/docs/providers/google/r/container_node_pool.html

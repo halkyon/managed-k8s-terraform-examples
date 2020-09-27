@@ -146,7 +146,7 @@ resource "google_container_cluster" "primary" {
 
 resource "google_container_node_pool" "node_pool" {
   count              = length(var.node_pools)
-  name               = lookup(var.node_pools[count.index], "name")
+  name               = format("%s-pool", lookup(var.node_pools[count.index], "name", format("%03d", count.index + 1)))
   cluster            = google_container_cluster.primary.name
   location           = var.location
   initial_node_count = lookup(var.node_pools[count.index], "initial_node_count", 1)
@@ -174,8 +174,6 @@ resource "google_container_node_pool" "node_pool" {
       enable_integrity_monitoring = true
       enable_secure_boot          = true
     }
-    tags   = lookup(var.node_pools[count.index], "tags", [])
-    labels = lookup(var.node_pools[count.index], "labels", {})
   }
   # Allow external changes to initial_node_count without interference from Terraform.
   lifecycle {
