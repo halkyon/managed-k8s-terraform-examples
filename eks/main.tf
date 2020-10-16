@@ -1,9 +1,5 @@
-terraform {
-  required_version = ">= 0.12"
-}
-
 provider "aws" {
-  version = "~> 2.0"
+  version = "~> 3.0"
   region  = var.region
 }
 
@@ -107,7 +103,10 @@ resource "aws_eks_cluster" "cluster" {
   name     = var.name
   role_arn = aws_iam_role.cluster.arn
   vpc_config {
-    subnet_ids = concat(aws_subnet.public[*].id, aws_subnet.private[*].id)
+    endpoint_private_access = var.endpoint_private_access
+    endpoint_public_access  = var.endpoint_public_access
+    public_access_cidrs     = var.public_access_cidrs
+    subnet_ids              = concat(aws_subnet.public[*].id, aws_subnet.private[*].id)
   }
   # Ensure that IAM Role permissions are created before and deleted after EKS Cluster handling.
   # Otherwise, EKS will not be able to properly delete EKS managed EC2 infrastructure such as Security Groups.
@@ -118,17 +117,18 @@ resource "aws_eks_cluster" "cluster" {
 }
 
 resource "aws_eks_node_group" "nodegroup" {
+  count           = length(var.node_pools)
   cluster_name    = aws_eks_cluster.cluster.name
-  node_group_name = var.name
+  node_group_name = format("%s-group", lookup(var.node_pools[count.index], "node_group_name", format("%03d", count.index + 1)))
   node_role_arn   = aws_iam_role.node.arn
   subnet_ids      = aws_subnet.private[*].id
   scaling_config {
-    desired_size = var.desired_size
-    min_size     = var.min_size
-    max_size     = var.max_size
+    desired_size = lookup(var.node_pools[count.index], "desired_size", 1)
+    min_size     = lookup(var.node_pools[count.index], "min_size", 1)
+    max_size     = lookup(var.node_pools[count.index], "max_size", 2)
   }
-  disk_size      = var.disk_size
-  instance_types = [var.instance_type]
+  disk_size      = lookup(var.node_pools[count.index], "disk_size", 20)
+  instance_types = [lookup(var.node_pools[count.index], "instance_type", "t3.small")]
   # Allow external changes to autoscaling desired size without interference from Terraform
   lifecycle {
     ignore_changes = [scaling_config[0].desired_size]
@@ -139,6 +139,7 @@ resource "aws_eks_node_group" "nodegroup" {
     aws_iam_role_policy_attachment.AmazonEKSWorkerNodePolicy,
     aws_iam_role_policy_attachment.AmazonEKS_CNI_Policy,
     aws_iam_role_policy_attachment.AmazonEC2ContainerRegistryReadOnly,
+    aws_iam_role_policy_attachment.AmazonSSMManagedInstanceCore,
     aws_iam_role_policy.EKSClusterAutoscaler
   ]
 }
@@ -193,6 +194,11 @@ resource "aws_iam_role_policy_attachment" "AmazonEKS_CNI_Policy" {
 
 resource "aws_iam_role_policy_attachment" "AmazonEC2ContainerRegistryReadOnly" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+  role       = aws_iam_role.node.name
+}
+
+resource "aws_iam_role_policy_attachment" "AmazonSSMManagedInstanceCore" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
   role       = aws_iam_role.node.name
 }
 

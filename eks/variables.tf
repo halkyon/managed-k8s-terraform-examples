@@ -36,36 +36,28 @@ See https://aws.amazon.com/about-aws/global-infrastructure/regions_az/ for more 
 EOF
 }
 
-variable "disk_size" {
-  type        = number
-  default     = 100
-  description = "Disk size for nodes, in GB."
+variable "endpoint_private_access" {
+  type        = bool
+  default     = false
+  description = "Whether the private API endpoint is enabled"
 }
 
-variable "instance_type" {
-  type        = string
-  default     = "t3.medium"
-  description = "Instance type for nodes"
+variable "endpoint_public_access" {
+  type        = bool
+  default     = true
+  description = "Whether the public API endpoint is enabled"
 }
 
-variable "desired_size" {
-  type        = number
-  default     = 2
+variable "public_access_cidrs" {
+  type        = list(string)
+  default     = ["0.0.0.0/0"]
+  description = "List of CIDRs that can access the public API server"
+}
+
+variable "node_pools" {
+  type        = list(map(string))
   description = <<EOF
-Autoscaling group desired size for nodes. This value is only used initially on cluster creation.
-Changes made externally to this value (i.e. through the AWS console, or via autoscaling processes)
-will not be overridden.
+List of node pools to use for the cluster.
+See https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_node_group
 EOF
-}
-
-variable "min_size" {
-  type        = number
-  default     = 2
-  description = "Autoscaling group minimum size for nodes."
-}
-
-variable "max_size" {
-  type        = number
-  default     = 4
-  description = "Autoscaling group maximum size for nodes."
 }
