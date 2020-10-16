@@ -1,7 +1,3 @@
-terraform {
-  required_version = ">= 0.12"
-}
-
 provider "digitalocean" {
   version = "~> 1.0"
   token   = var.do_token

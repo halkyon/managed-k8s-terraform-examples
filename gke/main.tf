@@ -1,7 +1,3 @@
-terraform {
-  required_version = ">= 0.12"
-}
-
 locals {
   location_parts = split("-", var.location)
   region         = format("%s-%s", local.location_parts[0], local.location_parts[1])
